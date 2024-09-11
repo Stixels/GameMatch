@@ -3,11 +3,13 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "../../../components/ui/button";
+import { Label } from "../../../components/ui/label";
+import { RadioGroup, RadioGroupItem } from "../../../components/ui/radio-group";
+import { Slider } from "../../../components/ui/slider";
+import { Checkbox } from "../../../components/ui/checkbox";
+import { useSession } from "next-auth/react";
+import { supabase } from "../../../utils/supabaseClient";
 
 type QuestionType = "checkbox" | "radio" | "slider";
 
@@ -86,6 +88,8 @@ export default function QuestionnairePage() {
   const [answers, setAnswers] = useState<Answers>({});
   const [direction, setDirection] = useState(0);
 
+  const { data: session } = useSession();
+
   const handleInputChange = (questionId: string, value: string | number) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
@@ -124,9 +128,26 @@ export default function QuestionnairePage() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Questionnaire answers:", answers);
-    router.push("/results");
+  const handleSubmit = async () => {
+    try {
+      const { error } = await supabase.functions.invoke(
+        "save-user-preferences",
+        {
+          body: {
+            user_email: session?.user?.email,
+            selected_games: null, // We don't need to update this here
+            questionnaire_answers: answers,
+          },
+        }
+      );
+
+      if (error) throw error;
+
+      router.push("/results");
+    } catch (error) {
+      console.error("Error saving questionnaire answers:", error);
+      alert("There was an error saving your answers. Please try again.");
+    }
   };
 
   const renderQuestion = (question: Question) => {
@@ -191,7 +212,7 @@ export default function QuestionnairePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mx-auto mt-10 p-6 bg-card rounded-lg shadow-lg">
       <h1 className="text-3xl font-bold mb-6 text-center">
         Gaming Preferences Questionnaire
       </h1>
@@ -224,7 +245,7 @@ export default function QuestionnairePage() {
             {currentQuestion === questions.length - 1 ? "Finish" : "Next"}
           </Button>
         </div>
-        <div className="mt-4 text-center text-sm text-gray-500">
+        <div className="mt-4 text-center text-sm text-muted-foreground">
           Question {currentQuestion + 1} of {questions.length}
         </div>
       </div>

@@ -3,10 +3,12 @@ import { Button } from "../components/ui/button";
 
 export default function Home() {
   return (
-    <main className="container mx-auto px-4 py-8 space-y-8">
+    <main className="container mx-auto px-4 py-16 space-y-12 bg-background text-foreground">
       <header className="text-center">
-        <h1 className="text-5xl font-bold mb-4">Welcome to GameMatch</h1>
-        <p className="text-2xl text-gray-600">
+        <h1 className="text-5xl font-bold mb-4 text-primary">
+          Welcome to GameMatch
+        </h1>
+        <p className="text-2xl text-muted-foreground">
           Find your next favorite game in minutes!
         </p>
       </header>
@@ -45,9 +47,9 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md">
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-gray-600">{description}</p>
+    <div className="p-6 rounded-lg border border-border bg-card text-card-foreground shadow-sm">
+      <h3 className="text-xl font-semibold mb-2 text-primary">{title}</h3>
+      <p className="text-muted-foreground">{description}</p>
     </div>
   );
 }

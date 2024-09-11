@@ -1,7 +1,7 @@
 // src/app/api/search-games/route.ts
 import { NextResponse } from "next/server";
-import { makeIGDBRequest } from "@/lib/igdb";
-import { Game } from "@/app/(protected)/game-selection/page";
+import { makeIGDBRequest } from "../../../lib/igdb";
+import { Game } from "../../../app/(protected)/game-selection/page";
 
 interface PopularityPrimitive {
   game_id: number;

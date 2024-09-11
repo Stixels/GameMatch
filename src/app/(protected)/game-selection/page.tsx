@@ -1,7 +1,7 @@
 // src/app/game-selection/page.tsx
 import { Suspense } from "react";
 import { GameGrid } from "./components/GameGrid";
-import { makeIGDBRequest } from "@/lib/igdb";
+import { makeIGDBRequest } from "../../../lib/igdb";
 
 interface PopularityPrimitive {
   id: number;

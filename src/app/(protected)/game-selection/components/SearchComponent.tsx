@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { Input } from "@/components/ui/input";
+import { Input } from "../../../../components/ui/input";
 
 interface SearchComponentProps {
   onSearch: (query: string) => void;

@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "../../../../components/ui/dialog";
 import { motion } from "framer-motion";
 
 interface GameDetailsProps {
@@ -36,7 +36,7 @@ export function GameDetailsModal({ game, isOpen, onClose }: GameDetailsProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold mb-2">
             {game.name}

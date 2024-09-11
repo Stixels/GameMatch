@@ -18,6 +18,8 @@ import { Button } from "../../../../components/ui/button";
 import { useRouter } from "next/navigation";
 import { CheckCircle, GamepadIcon } from "lucide-react";
 import { SearchComponent } from "./SearchComponent";
+import { useSession } from "next-auth/react";
+import { supabase } from "../../../../utils/supabaseClient";
 
 interface GameGridProps {
   initialGames: Game[];
@@ -32,6 +34,7 @@ export function GameGrid({ initialGames = [] }: GameGridProps) {
     "popularity"
   );
   const router = useRouter();
+  const { data: session } = useSession();
 
   const handleSearch = useCallback(
     async (query: string) => {
@@ -95,9 +98,27 @@ export function GameGrid({ initialGames = [] }: GameGridProps) {
     return url;
   };
 
-  const handleFinishSelection = () => {
+  const handleFinishSelection = async () => {
     if (selectedGames.length > 0) {
-      router.push("/questionnaire");
+      try {
+        const { error } = await supabase.functions.invoke(
+          "save-user-preferences",
+          {
+            body: {
+              user_email: session?.user?.email,
+              selected_games: selectedGames,
+              questionnaire_answers: null, // We'll fill this later
+            },
+          }
+        );
+
+        if (error) throw error;
+
+        router.push("/questionnaire");
+      } catch (error) {
+        console.error("Error saving game selection:", error);
+        alert("There was an error saving your selection. Please try again.");
+      }
     } else {
       alert("Please select at least one game before proceeding.");
     }
